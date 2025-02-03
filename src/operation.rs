@@ -15,23 +15,18 @@ impl Operation {
 		let ifs = &args.ifs;
 
 		let build_type = match args.build {
-			BuildType::Release => {
-				"release"
-			},
-			BuildType::Service => {
+			BuildType::All => {
 				"-B allprograms"
 			},
-			BuildType::Header => {
-				"hdr sql_to_srcpf"
-			}
 		};
 
 		let mut commands = vec![];
 
 		commands.push(format!("PATH=/QOpenSys/pkgs/bin:$PATH && cd {ifs} && gmake {build_type} BIN_LIB={bin}"));
 	
-		if args.build == BuildType::Release {
+		if args.release {
 
+			commands.push(format!("PATH=/QOpenSys/pkgs/bin:$PATH && cd {ifs} && gmake release"));
 			commands.push(format!("system -v \"CRTLIB {deploy}\""));
 			commands.push(format!("system -v \"CPYFRMSTMF FROMSTMF('{ifs}/release/release.savf') TOMBR('/QSYS.lib/{deploy}.lib/RELEASE.FILE') MBROPT(*REPLACE) CVTDTA(*NONE)\""));
 			commands.push(format!("system -v \"RSTOBJ RSTLIB({deploy}) OBJ(*ALL) SAVLIB({bin}) DEV(*SAVF) SAVF({deploy}/RELEASE)\""));
@@ -88,8 +83,8 @@ impl Operation {
 }
 
 impl Instruction for Operation {
-    fn run(&self, args: crate::cli::Arguments) -> Result<(), anyhow::Error> {
-        
+	fn run(&self, args: crate::cli::Arguments) -> Result<(), anyhow::Error> {
+		
 		let connection_str = format!("{}:22", &args.host);
 
 		println!("Conneting to: {}", &args.host);
@@ -116,7 +111,7 @@ impl Instruction for Operation {
 	
 
 		Ok(())
-    }
+	}
 }
 
 pub struct IcecapOperation;

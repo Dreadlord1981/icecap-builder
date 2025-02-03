@@ -5,9 +5,7 @@ use serde::Serialize;
 #[serde(rename_all="kebab-case")]
 pub enum BuildType {
 	#[default]
-	Release,
-	Service,
-	Header
+	All
 }
 
 #[derive(Debug, Parser)]
@@ -35,6 +33,9 @@ pub struct Arguments {
 
 	#[arg(short('b'), long("bin"), help="Bin libl", default_value="CAPDEV")]
 	pub bin: String,
+
+	#[arg(short('r'), long("release"), help="Release", default_value="false")]
+	pub release: bool,
 
 	#[arg(long("build-icecap"), help="Build icecap", default_value="false")]
 	pub build_icecap: bool,
